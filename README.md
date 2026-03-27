@@ -1,6 +1,6 @@
-# 🧠 Chatbot com TinyLlama em Português
+# 🧠 Chatbots em Português com Qwen 2.5
 
-Este repositório apresenta quatro práticas de implementação de chatbots com modelos de linguagem, utilizando o modelo [TinyLlama 1.1B Chat](https://huggingface.co/TinyLlama/TinyLlama-1.1B-Chat-v1.0). As práticas estão organizadas por grau de complexidade crescente, desde uma execução simples em terminal até uma aplicação RAG (Retrieval-Augmented Generation) baseada em PDF com interface Gradio.
+Este repositório apresenta quatro práticas de implementação de chatbots com modelos de linguagem, utilizando o modelo [Qwen 2.5 3B Instruct](https://huggingface.co/Qwen/Qwen2.5-3B-Instruct). As práticas estão organizadas por grau de complexidade crescente, desde uma execução simples em terminal até uma aplicação RAG (Retrieval-Augmented Generation) baseada em PDF com interface Gradio.
 
 ---
 
@@ -10,11 +10,11 @@ Este repositório apresenta quatro práticas de implementação de chatbots com 
 Implemente um chatbot simples em terminal que responde perguntas em português, utilizando exemplos explícitos no prompt.
 
 **🧩 Implementação:**  
-O código carrega o modelo `TinyLlama-1.1B-Chat` da Hugging Face, define um prompt com instruções e exemplos, recebe uma pergunta via `input()` e gera uma resposta com `transformers`.
+O notebook organiza o fluxo em etapas pequenas: configuração, carregamento do modelo, montagem das mensagens e geração da resposta.
 
 **🚀 Resultados Esperados:**
-- Executado em ambiente local com suporte CUDA ou CPU.
-- Geração de respostas coerentes em português com base em poucos-shots no prompt.
+- Executado em ambiente local ou Colab com GPU.
+- Geração de respostas em português com um modelo pequeno, mas mais forte que o TinyLlama para uso geral.
 
 ---
 
@@ -24,11 +24,11 @@ O código carrega o modelo `TinyLlama-1.1B-Chat` da Hugging Face, define um prom
 Desenvolva uma interface web interativa com Gradio para o chatbot, permitindo que o usuário insira perguntas e receba respostas imediatamente, sem manter o histórico da conversa.
 
 **🧩 Implementação:**  
-A função `responder()` gera um prompt estático com exemplos fixos e insere a pergunta do usuário. A interface foi construída com `gr.Interface()` contendo um `Textbox` de entrada e saída.
+A função `responder()` encapsula a inferência do modelo e a interface foi construída com `gr.Interface()` contendo um `Textbox` de entrada e saída.
 
 **🚀 Resultados Esperados:**
 - Interface visual simples e responsiva.
-- Modelo responde de forma independente a cada pergunta, sem lembrar conversas anteriores.
+- Cada pergunta é respondida de forma independente.
 
 ---
 
@@ -38,7 +38,7 @@ A função `responder()` gera um prompt estático com exemplos fixos e insere a 
 Crie um chatbot com histórico de interação, permitindo manter o contexto das conversas anteriores entre usuário e assistente.
 
 **🧩 Implementação:**  
-O prompt é construído dinamicamente com o histórico de pares (usuário, resposta). A interface foi construída com `gr.Blocks()` e inclui botão de limpar, `gr.Chatbot()` e controle de estado com `gr.State`.
+As mensagens são construídas dinamicamente com o histórico de pares (usuário, resposta). A interface usa `gr.Blocks()`, `gr.Chatbot()` e `gr.State()` para deixar explícita a separação entre lógica e estado.
 
 **🚀 Resultados Esperados:**
 - Mantém contexto conversacional entre perguntas.
@@ -53,19 +53,21 @@ Implemente um sistema de RAG (Retrieval-Augmented Generation) com suporte a uplo
 
 **🧩 Implementação:**  
 1. Extrai texto do PDF usando `PyMuPDF`.
-2. Divide o texto em chunks e gera embeddings com `SentenceTransformer`.
-3. Usa `FAISS` para indexar os chunks e recuperar o mais relevante à pergunta.
-4. Gera resposta contextualizada com base no chunk recuperado.
-5. Interface Gradio com `gr.File`, `gr.Chatbot`, histórico e controle de estado.
+2. Divide o texto em chunks.
+3. Gera embeddings multilíngues com `SentenceTransformer`.
+4. Usa `FAISS` para indexar os chunks e recuperar os trechos mais relevantes.
+5. Gera resposta contextualizada com base no contexto recuperado.
+6. Disponibiliza uma interface Gradio com upload, histórico e botão de limpar.
 
 **🚀 Resultados Esperados:**
 - Upload e indexação de PDF textual.
 - Perguntas respondidas com base no conteúdo do arquivo.
-- Sistema robusto para construção de assistentes contextuais.
+- Sistema de RAG mais consistente para documentos em português.
 
 ---
 
 ## 🧰 Requisitos
 
 ```bash
-pip install torch transformers gradio sentence-transformers faiss-cpu pymupdf
+pip install torch transformers accelerate gradio sentence-transformers faiss-cpu pymupdf
+```
